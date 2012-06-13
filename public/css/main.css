@@ -1,0 +1,13 @@
+.logger {
+    height: 100%;
+    opacity: 0.5;
+    overflow: scroll;
+    position: absolute;
+    right: 0;
+    top: 35px;
+    width: 300px;
+    z-index: 4;
+}
+.logger i {
+    color: green;
+}
