@@ -16,7 +16,6 @@ define([
     LoggerController.prototype = {
         initialize: function() {
             this.view = new LoggerView({});
-            console.log(this.view);
         },
         subscribeChannels: function() {
             new SubscribeCommand('/**', this.logEvent).execute();
