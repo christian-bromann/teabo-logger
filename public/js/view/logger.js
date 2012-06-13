@@ -1,7 +1,7 @@
-define([ 'jquery', 
-         'underscore', 
-         'backbone', 
-         'text!/logger/templates/list.html' 
+define([ 'jquery',
+         'underscore',
+         'backbone',
+         'text!/lao-logger/templates/list.html'
 ], function($, _, Backbone, loggerTemplate) {
 
     var LoggerView = Backbone.View.extend({

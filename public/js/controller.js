@@ -2,7 +2,7 @@ define([
     'jquery',
     'underscore',
     '/core/js/utils/subscribe_command.js',
-    '/logger/js/view/logger.js'
+    '/lao-logger/js/view/logger.js'
 ], function( $, _, SubscribeCommand, LoggerView) {
     
     var LoggerController = function(options) {
