@@ -36,7 +36,15 @@
  *     -> for this exampel module:
  *     -> http://localhost:3000/lao-logger/css/main.css
  *
+ *---------------------------------------------------------------------------------------------------------------
  */
+
+/* at first load all your modules and files you need */
+
+// include file with IO services
+// var pubsub  = require('./io');
+// include file with rest services
+var service = require('./rest');
 
 /* init function
  * is executed when module gets loaded
@@ -53,7 +61,7 @@ exports.style = 'css/main.css';
 // exports.template = '<b>some HTML stuff here';
 
 // export your rest service array
-// exports.rest = restArray;
+exports.rest = service.rest;
 
 // export your comet services
 // exports.io = ioArray;
