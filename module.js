@@ -42,7 +42,7 @@
 /* at first load all your modules and files you need */
 
 // include file with IO services
-// var pubsub  = require('./io');
+var pubsub  = require('./comet');
 // include file with rest services
 var service = require('./rest');
 
@@ -64,4 +64,4 @@ exports.style = 'css/main.css';
 exports.rest = service.rest;
 
 // export your comet services
-// exports.io = ioArray;
+exports.io = pubsub.io;

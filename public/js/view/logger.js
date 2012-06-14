@@ -10,8 +10,9 @@
 define([ 'jquery',
          'underscore',
          'backbone',
+         '/core/js/utils/model_command.js',
          'text!/lao-logger/templates/list.html'
-], function($, _, Backbone, loggerTemplate) {
+], function($, _, Backbone, ModelCommand, loggerTemplate) {
 
     var LoggerView = Backbone.View.extend({
         
@@ -28,11 +29,12 @@ define([ 'jquery',
         // the initialize function gets called when you create a view object
         initialize : function() {
             // bind "this" to your function via underscores _.bindAll function
-            _.bindAll(this,'render');
+            _.bindAll(this,'render','addLog','sendIORequest');
 
             // render view
             this.render();
             this.nr = 0;
+            this.i = 0;
         },
 
         render : function() {
@@ -53,19 +55,46 @@ define([ 'jquery',
         // add log informations to the view
         addLog: function(param1,param2) {
 
+            // define vars
+            var channel, object;
+
             // set server logs (via socket stream) apart from client logs (event dispatcher events)
             if(typeof param1 !== 'string') {
 
+                // define vars
+                channel = '',
+                object  = JSON.stringify(param1);
+
                 // events on server site
-                $(this.el).find('div').prepend('<b>'+ (++this.nr) +'. Server Event: </b><br><i>Object:</i> ' + JSON.stringify(param1) + '<br><br>');
-            
+                $(this.el).find('div').prepend('<b>'+ (++this.nr) +'. Server Event: </b><br><i>Object:</i> ' + object + '<br><br>');
+
             } else {
+
+                // define vars
+                channel = JSON.stringify(param1),
+                object  = JSON.stringify(param2);
               
                 // events on client site
-                $(this.el).find('div').prepend('<b>'+ (++this.nr) +'. Client Event:</b><br><i>Channel:</i> ' + JSON.stringify(param1) + '<br><i>Object:</i> ' + JSON.stringify(param2) + '<br><br>');
+                $(this.el).find('div').prepend('<b>'+ (++this.nr) +'. Client Event:</b><br><i>Channel:</i> ' + channel + '<br><i>Object:</i> ' + object + '<br><br>');
             
+                this.sendIORequest(channel,object);
+
             }
+
             
+        },
+
+        sendIORequest: function(channel,object) {
+            
+            //
+            new ModelCommand(
+                '/service/lao-logger/add',
+                {
+                    channel: channel,
+                    object:  object
+                }
+            ).execute();
+            console.log('execute io ', object);
         }
     });
 

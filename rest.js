@@ -55,8 +55,8 @@ var showLogById = function(req,res) {
 // it should be always an arry
 exports.rest = [
 
-    /* the array objects must be available in the following format 
-     * 
+    /* the array objects must be available in the following format
+     *
      * url: URL of the rest service
      * type: request type [get,post,delete,put]
      * callback: function which will be executed

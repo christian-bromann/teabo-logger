@@ -47,6 +47,9 @@ define([
         initialize: function() {
             // initialize your view
             this.view = new LoggerView({});
+
+            // connect app to IO services
+            window.app.startClientIO();
         },
 
         subscribeChannels: function() {
