@@ -51,6 +51,9 @@ var service = require('./rest');
  */
 exports.init = function() {
 
+    // do something exciting
+    // ...
+
 };
 
 // register css file
@@ -64,4 +67,4 @@ exports.style = 'css/main.css';
 exports.rest = service.rest;
 
 // export your comet services
-exports.io = pubsub.io;
+exports.io = pubsub.comet;

@@ -26,15 +26,16 @@ define([ 'jquery',
             // 'click a' : 'someFunction'
         },
         
-        // the initialize function gets called when you create a view object
+        // the initialize function is called when you create a view object
         initialize : function() {
             // bind "this" to your function via underscores _.bindAll function
             _.bindAll(this,'render','addLog','sendIORequest');
 
+            // id of each log
+            this.nr   = 0;
+
             // render view
             this.render();
-            this.nr = 0;
-            this.i = 0;
         },
 
         render : function() {
@@ -55,8 +56,15 @@ define([ 'jquery',
         // add log informations to the view
         addLog: function(param1,param2) {
 
+            // return if the event comes from this module - when a log is sent, a server event is called too,
+            // which will also be recognized and will send a new log to the server again and so one...
+            if(JSON.stringify(param1).match(/\{"channel":/)) {
+                return;
+            }
+
             // define vars
-            var channel, object;
+            var channel, object,
+                id = ++this.nr;
 
             // set server logs (via socket stream) apart from client logs (event dispatcher events)
             if(typeof param1 !== 'string') {
@@ -66,7 +74,11 @@ define([ 'jquery',
                 object  = JSON.stringify(param1);
 
                 // events on server site
-                $(this.el).find('div').prepend('<b>'+ (++this.nr) +'. Server Event: </b><br><i>Object:</i> ' + object + '<br><br>');
+                // param2 is here always undefined
+                $(this.el).find('div').prepend(
+                    '<b>'+ id +'. Server Event: </b><br>' +
+                    '<i>Object:</i> ' + object + '<br><br>'
+                );
 
             } else {
 
@@ -75,26 +87,36 @@ define([ 'jquery',
                 object  = JSON.stringify(param2);
               
                 // events on client site
-                $(this.el).find('div').prepend('<b>'+ (++this.nr) +'. Client Event:</b><br><i>Channel:</i> ' + channel + '<br><i>Object:</i> ' + object + '<br><br>');
+                $(this.el).find('div').prepend(
+                    '<b>'+ id +'. Client Event:</b><br>' +
+                    '<i>Channel:</i> ' + channel + '<br>' +
+                    '<i>Object:</i> ' + object + '<br><br>'
+                );
             
-                this.sendIORequest(channel,object);
-
             }
 
-            
+            // send each client event via web socket to the server to store them in a DB
+            this.sendIORequest(channel,object);
+
         },
 
+        // send log to server via the model command
         sendIORequest: function(channel,object) {
             
-            //
+            // The model command send a request to the given channel via WebSocket to the server.
+            // Like the subscribe command you can collect them in an array to put all in a group command
+            // (take a look to the subscribeChannels() function in controller.js)
             new ModelCommand(
+                // the channel you listen on server side
                 '/service/lao-logger/add',
+                
+                // your object you want to work with
                 {
                     channel: channel,
                     object:  object
                 }
             ).execute();
-            console.log('execute io ', object);
+
         }
     });
 

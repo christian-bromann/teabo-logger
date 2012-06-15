@@ -3,11 +3,11 @@
  * @date 2012-06-14
  * @requires nodeJS (http://nodejs.org/)
  * @version 0.1-rc-20120614
- * @description this file defines all rest services 
+ * @description this file defines all rest services
  */
 
 // include your modules and files you need
-// you may need your module model to get and return the stored objects of the mongodb 
+// you may need your module model to get and return the stored objects of the mongodb
 var Model = require('../../modules/lao-logger/model/lao-logger').model;
 
 /* function to show all stored log informations
@@ -51,6 +51,31 @@ var showLogById = function(req,res) {
     });
 };
 
+/* function to delete all logs from the database
+ *
+ * @param
+ *     req - request object
+ *           contains request params
+ *     res - respond object
+ *           contains respond configurations
+ * @returns null
+ */
+var deleteLogs = function(req, res) {
+    // find all objects (with empty query {})
+    Model.find({}, function(err,logs) {
+        if(!err) {
+            // iterate through all elements
+            for(var i = 0; i < logs.length; ++i) {
+                // remove each one
+                logs[i].remove();
+            }
+            res.send('Successfully removed all logs from database');
+        } else {
+            res.send('[ERROR] - objects could not be loaded');
+        }
+    });
+};
+
 // define and export your rest services
 // it should be always an arry
 exports.rest = [
@@ -61,7 +86,8 @@ exports.rest = [
      * type: request type [get,post,delete,put]
      * callback: function which will be executed
      */
-    { url: '/lao-logger/list', type: 'get', callback: showAllLogs  },
-    { url: '/lao-logger/show/:id', type: 'get', callback: showLogById  }
+    { url: '/lao-logger/list',     type: 'get', callback: showAllLogs },
+    { url: '/lao-logger/show/:id', type: 'get', callback: showLogById },
+    { url: '/lao-logger/delete',   type: 'get', callback: deleteLogs  }
 
 ];
