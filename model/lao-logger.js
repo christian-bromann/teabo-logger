@@ -13,6 +13,7 @@ var mongoose = require('mongoose'),
     // create the schema of your model
     // for more information take a look to the mongoose api on <http://mongoosejs.com/>
     schema = new mongoose.Schema({
+        id:      Number,
         channel: String,
         object:  String
     }),

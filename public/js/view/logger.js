@@ -58,7 +58,7 @@ define([ 'jquery',
 
             // return if the event comes from this module - when a log is sent, a server event is called too,
             // which will also be recognized and will send a new log to the server again and so one...
-            if(JSON.stringify(param1).match(/\{"channel":/)) {
+            if(JSON.stringify(param1).match(/\{"id":(\d+)/)) {
                 return;
             }
 
@@ -96,12 +96,12 @@ define([ 'jquery',
             }
 
             // send each client event via web socket to the server to store them in a DB
-            this.sendIORequest(channel,object);
+            this.sendIORequest(id,channel,object);
 
         },
 
         // send log to server via the model command
-        sendIORequest: function(channel,object) {
+        sendIORequest: function(id,channel,object) {
             
             // The model command send a request to the given channel via WebSocket to the server.
             // Like the subscribe command you can collect them in an array to put all in a group command
@@ -109,9 +109,10 @@ define([ 'jquery',
             new ModelCommand(
                 // the channel you listen on server side
                 '/service/lao-logger/add',
-                
+
                 // your object you want to work with
                 {
+                    id:      id,
                     channel: channel,
                     object:  object
                 }

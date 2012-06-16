@@ -23,8 +23,24 @@ var Model = require('../../modules/lao-logger/model/lao-logger').model,
  */
 comet['/service/lao-logger/add'] = function(bayeux,channel,obj) {
     
+    // flush the DB if the user load the page
+    // (happens if a handshakeComplete event is logged)
+    if(obj.channel === '"handshakeComplete"') {
+        // find all objects (with empty query {})
+        Model.find({}, function(err,logs) {
+            if(!err) {
+                // iterate through all elements
+                for(var i = 0; i < logs.length; ++i) {
+                    // remove each one
+                    logs[i].remove();
+                }
+            }
+        });
+    }
+
     // create a mongo object
     var log = new Model({
+        id:      obj.id,
         channel: obj.channel,
         object:  obj.object
     });

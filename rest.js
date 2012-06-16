@@ -41,12 +41,20 @@ var showAllLogs = function(req,res) {
  * @returns null
  */
 var showLogById = function(req,res) {
-    var id = req.params.id;
-    Model.findById(id,function(err,log) {
-        if(!err) {
+    var id = parseInt(req.params.id,10);
+
+    // get log by given id
+    Model.find({id: id},function(err,log) {
+
+        if(!err && log.length) {
+
+            // send specific log
             res.send(log);
+        
         } else {
-            res.send('[Error] - object could not be loaded');
+        
+            res.send('[Error] - object could not be loaded: ',err);
+        
         }
     });
 };
@@ -63,17 +71,25 @@ var showLogById = function(req,res) {
 var deleteLogs = function(req, res) {
     // find all objects (with empty query {})
     Model.find({}, function(err,logs) {
+        
         if(!err) {
+
             // iterate through all elements
             for(var i = 0; i < logs.length; ++i) {
                 // remove each one
                 logs[i].remove();
             }
+
             res.send('Successfully removed all logs from database');
+        
         } else {
+            
             res.send('[ERROR] - objects could not be loaded');
+        
         }
+
     });
+
 };
 
 // define and export your rest services
